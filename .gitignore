@@ -1,0 +1,22 @@
+# --- Logs generados por los scripts (no versionar datos de runtime) ---
+*.log
+backup.log
+healthcheck.log
+user_management.log
+
+# --- Artefactos de pruebas / backups generados ---
+*.tar.gz
+*.tar.gz.part
+.run_tests.sh
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editores ---
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
