@@ -29,19 +29,13 @@ El reporte se imprime en stdout. Para guardarlo en un archivo:
 Total intentos fallidos: 30
 
 Top IPs atacantes:
-
 12 203.0.113.45
-
 12 198.51.100.17
-
 6 192.0.2.88
 
 Usuarios mas atacados:
-
 12 root
-
 3 admin
-
 3 ubuntu
 
 
