@@ -3,9 +3,9 @@
 # ssh-audit.sh -    Toma un log y cuenta intentos fallidos por ssh, mostrando atacantes y
 #                   usuarios más atacados.
 # Uso:
-#       ./ssh-audit.sh <registro.log> [directorio_destino]
+#       ./ssh-audit.sh <registro.log>
 # Ejemplo:
-#       ./ssh-audit.sh sample-auth.log log-ssh-audit.log
+#       ./ssh-audit.sh sample-auth.log
 #
 # Autor: Nicolás Rojo - parte de linux-sysadmin-toolkit
 
@@ -17,12 +17,7 @@ log() {
     local timestamp
     timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
     local msg="[${timestamp}] [${level}] $*"
-
-    if [[ -n "${LOG_FILE:-}" ]]; then
-        echo "$msg" >> "$LOG_FILE"
-    else
-        echo "$msg" >&2
-    fi
+    echo "$msg" >&2
 }
 
 # die() — loguea un error y corta la ejecución con código distinto de cero.
@@ -32,12 +27,12 @@ die() {
 }
 
 if [[ $# -lt 1 ]];then
-    die "Uso: $0 <registro.log> [directorio_destino]"
+    die "Uso: $0 <registro.log>"
 fi
 
 readonly INPUT_FILE="$1"
 
-[[ -r "$INPUT_FILE" ]] || die "No se puede leer '$1'."
+[[ -r "$INPUT_FILE" ]] || die "No se puede leer '$INPUT_FILE'."
 
 contar_ips() { 
     awk '/Failed password/ { 
@@ -55,7 +50,7 @@ contar_ips() {
         for(ip in ips){
             print ips[ip], ip
         }
-    }' "$1"
+    }' "$INPUT_FILE"
 }
 
 contar_usuarios() { 
@@ -79,20 +74,20 @@ contar_usuarios() {
         for(user in users){
             print users[user], user
         }
-    }' "$1"
+    }' "$INPUT_FILE"
 }
 
 echo "=== SSH Brute Force Report ==="
 
-total=$( contar_ips "$INPUT_FILE" | awk '{ total+=$1 } END { print total }')
+total=$( contar_ips | awk '{ total+=$1 } END { print total+0 }')
 
 echo "Total intentos fallidos: $total"
 echo
 
 echo "Top IPs atacantes: "
-contar_ips "$INPUT_FILE" | sort -k1,1 -nr
+contar_ips | sort -k1,1 -nr
 
 echo
 
 echo "Usuarios mas atacados: "
-contar_usuarios "$INPUT_FILE" | sort -k1,1 -nr
+contar_usuarios | sort -k1,1 -nr
